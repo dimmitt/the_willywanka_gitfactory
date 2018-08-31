@@ -63,4 +63,43 @@ reverseCheckout 1 master
 ```
 
 ### 2) Rebase to cleanup a pr but only changes in my branch
-** Coming Soon **
+directions: 
+<br> use `cherry` to find out how your commits are different from the branch
+<br> the first line will be the oldest commit that is different
+<br> use cut and awk to just give the sha of that oldes commit.
+<br> rebase to the sha of the oldest command but put tilde on the end of it to get the commit before that!
+<br> also that xargs thing just lets me put the piped output wherever I want to put it.
+<br> let me know if these directions/this description is unclear. 😁
+
+```bash
+rebaseOnlyChangesInMyBranch() {
+  compareBranch=$1
+  currentBranch=$(git branch | grep \* | cut -d ' ' -f2)
+  
+  sha=$(git cherry -v $1 | 
+    sed -n 1p | 
+    cut -c 2- | 
+    awk '{print $1;}')
+
+  if ! [ -z "$sha" ]; then
+    passValidResultToRebase $compareBranch $currentBranch
+  else
+    echo "The command did nothing, you need to pass a compare branch as an argument."
+    echo "try these commands in your terminal as an example:" 
+    echo "rebaseOnlyChangesInMyBranch dev;"
+    echo "rebaseOnlyChangesInMyBranch master;"
+  fi
+}
+passValidResultToRebase() {
+  currentBranch=$2
+  compareBranch=$1
+  echo ;
+  echo 'Think of this command as the rebase before the rebase!';
+  echo "Current branch:                 $currentBranch";  
+  echo "Branch  being compared:         $compareBranch";
+  echo ;
+  echo "Paste the below command to rebase/(prep) commits this $currentBranch added";
+  echo "without worrying about new commits added to $compareBranch.";
+  echo "git rebase -i $sha~";
+}
+```
