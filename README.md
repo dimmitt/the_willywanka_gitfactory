@@ -2,6 +2,12 @@
 Want me to build you something in git? open an issue or direct message me on slack. 😁
 
 ## Things built so far:
+[1) Want to read the commit history of a project?](https://github.com/MichaelDimmitt/the_willywanka_gitfactory#1-want-to-read-the-commit-history-of-a-project)
+ - requested by Dimmitt
+
+[2) Rebase to cleanup a pr but only changes in my branch](https://github.com/MichaelDimmitt/the_willywanka_gitfactory#2-rebase-to-cleanup-a-pr-but-only-changes-in-my-branch)
+ - requested by Boyd, https://github.com/ohboyd
+## The Actual Implementations Are Below:
 
 ### 1) Want to read the commit history of a project?
 directions: 
@@ -55,3 +61,6 @@ tellMeYourParentsName() {
 
 reverseCheckout 1 master
 ```
+
+### 2) Rebase to cleanup a pr but only changes in my branch
+** Coming Soon **
