@@ -2,11 +2,30 @@
 Want me to build you something in git? open an issue or direct message me on slack. 😁
 
 ## Things built so far:
-[1) Want to read the commit history of a project?](https://github.com/MichaelDimmitt/the_willywanka_gitfactory#1-want-to-read-the-commit-history-of-a-project)
+[1) Read the history starting from the oldest commit of a project?](https://github.com/MichaelDimmitt/the_willywanka_gitfactory#1-want-to-read-the-commit-history-of-a-project)
  - requested by Dimmitt
 
 [2) Rebase to cleanup a pr but only changes in my branch](https://github.com/MichaelDimmitt/the_willywanka_gitfactory#2-rebase-to-cleanup-a-pr-but-only-changes-in-my-branch)
  - requested by Boyd, https://github.com/ohboyd
+
+## Simplified Implementations:
+Hopefully people think this is simpler. If not and have a better idea please open an issue and let me know a different way to implement these commands.
+```bash
+## download the willi wanka commands to home folder
+## svn to do command
+
+## if willywanka alias's exist remove the willywanka alias's
+grep -vwE "(willywonkacommands)" ~/.bashrc > ~/.bashrc 
+
+## add alias's that source the functions.
+{ cat <<\EOF
+alias initialCommit=$(source -f ~/willywonkacommands/firstCommitOnwards.sh reverseCheckout)
+alias checkoutParentCommit=$(source -f ~/willywonkacommands/firstCommitOnwards.sh parentCommit)
+
+alias rebaseCurrentBranch=$(source -f ~/willywonkacommands/rebaseCurrentBranch.sh rebaseOnlyChangesInMyBranch)
+EOF } >> ~/.bashrc 
+
+```
 ## The Actual Implementations Are Below:
 
 ### 1) Want to read the commit history of a project?
@@ -24,8 +43,10 @@ headCommitBeforeOperations=
 commitNum=
 targetBranch=
 reverseCheckout() {   
-  commitNum=$1;
-  targetBranch=$2
+  ## If no commit number is submitted default to 1.
+  ## If no compareBranch is passed, default to master.
+  commitNum=${1:1};
+  targetBranch=${2:master}
 
   git checkout $targetBranch; 
   headCommitBeforeOperations=$(git rev-parse HEAD)
@@ -56,10 +77,11 @@ tellMeYourParentsName() {
   git checkout $targetBranch; 
   git rev-list --reverse HEAD | 
     sed -n ${commitNum}p | 
-    xargs -I {} git checkout {}; 
+    xargs -I {} git checkout {};
 }
 
-reverseCheckout 1 master
+## example: reverseCheckout 1 master
+
 ```
 
 ### 2) Rebase to cleanup a pr but only changes in my branch
@@ -73,7 +95,8 @@ directions:
 
 ```bash
 rebaseOnlyChangesInMyBranch() {
-  compareBranch=$1
+  ## If no compareBranch is passed, default to master
+  compareBranch=${1:master}
   currentBranch=$(git branch | grep \* | cut -d ' ' -f2)
   
   sha=$(git cherry -v $1 | 
@@ -98,8 +121,11 @@ passValidResultToRebase() {
   echo "Current branch:                 $currentBranch";  
   echo "Branch  being compared:         $compareBranch";
   echo ;
-  echo "Paste the below command to rebase/(prep) commits this $currentBranch added";
-  echo "without worrying about new commits added to $compareBranch.";
+  echo "Paste the below command to rebase/(prep) commits for your current branch: $currentBranch";
+  echo "without worrying about new commits developers added to $compareBranch branch in the interim.";
   echo "git rebase -i $sha~";
 }
+
+## example: rebaseOnlyChangesInMyBranch master
+
 ```
