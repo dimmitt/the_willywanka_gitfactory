@@ -12,7 +12,10 @@ Want me to build you something in git? open an issue or direct message me on sla
 Hopefully people think this is simpler. If not and have a better idea please open an issue and let me know a different way to implement these commands.
 ```bash
 ## download the willi wanka commands to home folder
-## svn to do command
+## download the commands folder to the home directory.
+cd $HOME && rm -rf willywankacommands; 
+svn checkout https://github.com/MichaelDimmitt/the_willywanka_gitfactory/trunk/willywankacommands; 
+cd -;
 
 ## if willywanka alias's exist remove the willywanka alias's
 grep -vwE "(willywonkacommands)" ~/.bashrc > ~/.bashrc 
